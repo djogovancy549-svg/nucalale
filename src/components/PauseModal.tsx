@@ -5,6 +5,7 @@ import { sound } from '../audio/soundEngine';
 interface PauseModalProps {
   onResume: () => void;
   onRestart: () => void;
+  onExit: () => void;
   isMuted: boolean;
   onToggleMute: () => void;
 }
@@ -12,6 +13,7 @@ interface PauseModalProps {
 export const PauseModal: React.FC<PauseModalProps> = ({
   onResume,
   onRestart,
+  onExit,
   isMuted,
   onToggleMute,
 }) => {
@@ -56,10 +58,21 @@ export const PauseModal: React.FC<PauseModalProps> = ({
                 onRestart();
               }
             }}
-            className="flex items-center justify-center gap-2.5 w-full py-2.5 bg-slate-900 hover:bg-red-950/40 border border-slate-700 hover:border-red-500/50 text-slate-300 hover:text-red-300 rounded-xl transition cursor-pointer text-sm"
+            className="flex items-center justify-center gap-2.5 w-full py-2.5 bg-slate-900 hover:bg-amber-950/40 border border-slate-700 hover:border-amber-500/50 text-slate-300 hover:text-amber-300 rounded-xl transition cursor-pointer text-sm"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Mulai Ulang Game</span>
+          </button>
+
+          <button
+            onClick={() => {
+              sound.playUiClick();
+              onExit();
+            }}
+            className="flex items-center justify-center gap-2.5 w-full py-2.5 bg-slate-900 hover:bg-red-950/60 border border-slate-700 hover:border-red-500/60 text-slate-300 hover:text-red-200 rounded-xl transition cursor-pointer text-sm"
+          >
+            <Compass className="w-4 h-4" />
+            <span>Keluar ke Menu Utama</span>
           </button>
         </div>
 

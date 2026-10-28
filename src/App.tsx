@@ -273,6 +273,10 @@ export default function App() {
             engineRef.current?.setGameState('PAUSED');
             setGameState('PAUSED');
           }}
+          onExit={() => {
+            engineRef.current?.setGameState('TITLE');
+            setGameState('TITLE');
+          }}
           onTriggerAttack={() => engineRef.current?.triggerParangAttack()}
           onTriggerWhip={() => engineRef.current?.triggerWhipAttack()}
           onTriggerMagic={() => engineRef.current?.triggerKelimutuMagic()}
@@ -334,6 +338,10 @@ export default function App() {
             setGameState('PLAYING');
           }}
           onRestart={handleRestart}
+          onExit={() => {
+            engineRef.current?.setGameState('TITLE');
+            setGameState('TITLE');
+          }}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
         />

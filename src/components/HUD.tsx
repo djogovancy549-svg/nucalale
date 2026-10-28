@@ -13,7 +13,8 @@ import {
   Sword,
   Sparkles,
   ShieldAlert,
-  Users
+  Users,
+  LogOut
 } from 'lucide-react';
 import { PlayerStats, RegionId, Quest, Enemy, PlayableCharacter } from '../types/game';
 import { REGIONS_DATA } from '../data/gameData';
@@ -33,6 +34,7 @@ interface HUDProps {
   onOpenQuests: () => void;
   onOpenCharacterSelect: () => void;
   onOpenPause: () => void;
+  onExit: () => void;
   onTriggerAttack: () => void;
   onTriggerWhip: () => void;
   onTriggerMagic: () => void;
@@ -56,6 +58,7 @@ export const HUD: React.FC<HUDProps> = ({
   onOpenQuests,
   onOpenCharacterSelect,
   onOpenPause,
+  onExit,
   onTriggerAttack,
   onTriggerWhip,
   onTriggerMagic,
@@ -274,6 +277,16 @@ export const HUD: React.FC<HUDProps> = ({
               className="p-2 bg-slate-950/85 hover:bg-slate-900 border border-slate-700 text-slate-300 hover:text-white rounded-lg transition-colors cursor-pointer"
             >
               <Pause className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => {
+                sound.playUiClick();
+                onExit();
+              }}
+              title="Keluar dari Game"
+              className="p-2 bg-red-950/80 hover:bg-red-900 border border-red-500/40 text-red-200 rounded-lg transition-colors cursor-pointer"
+            >
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
 
