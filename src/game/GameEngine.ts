@@ -1718,24 +1718,23 @@ export class GameEngine {
     }
   }
 
-  // ================= MOBA-STYLE HIGH-FIDELITY ANIMATED HUMAN PLAYER =================
+  // ================= FULLY ANIMATED 3D CHIBI CHARACTER SPRITE MODEL =================
   private renderMobaPlayer() {
     const p = this.player;
     const char = this.selectedCharacter;
     const isFemale = char.gender === 'female';
 
-    // MOBA-Style Selection / Active Aura Ring underneath player
-    const auraRadius = 26 + Math.sin(p.auraPulse * 3) * 3;
+    // 1. Tactical Aura Ring & Ground Shadow
+    const auraRadius = 28 + Math.sin(p.auraPulse * 3) * 4;
     this.ctx.strokeStyle = char.visualTheme.accentColor;
-    this.ctx.lineWidth = 2.5;
+    this.ctx.lineWidth = 3.5;
     this.ctx.beginPath();
-    this.ctx.ellipse(p.x, p.y + 22, auraRadius, auraRadius * 0.45, 0, 0, Math.PI * 2);
+    this.ctx.ellipse(p.x, p.y + 26, auraRadius, auraRadius * 0.45, 0, 0, Math.PI * 2);
     this.ctx.stroke();
 
-    // Shadow
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
     this.ctx.beginPath();
-    this.ctx.ellipse(p.x, p.y + 23, 19, 9.5, 0, 0, Math.PI * 2);
+    this.ctx.ellipse(p.x, p.y + 27, 20, 9, 0, 0, Math.PI * 2);
     this.ctx.fill();
 
     if (p.invincibleTimer > 0 && Math.sin(this.ambientTime * 30) > 0) {
@@ -1749,235 +1748,164 @@ export class GameEngine {
       this.ctx.rotate(p.rollAngle);
       this.ctx.fillStyle = char.visualTheme.clothColor;
       this.ctx.beginPath();
-      this.ctx.arc(0, 0, 16, 0, Math.PI * 2);
+      this.ctx.arc(0, 0, 20, 0, Math.PI * 2);
       this.ctx.fill();
-      this.ctx.strokeStyle = char.visualTheme.headbandColor;
-      this.ctx.lineWidth = 3;
+      this.ctx.strokeStyle = char.visualTheme.accentColor;
+      this.ctx.lineWidth = 4;
       this.ctx.stroke();
       this.ctx.restore();
       return;
     }
 
-    let leftLegAngle = 0;
-    let rightLegAngle = 0;
-    let armSwing = 0;
-    const breatheY = Math.sin(p.breatheTimer) * 1.5;
-
-    if (p.isMoving) {
-      const stepSin = Math.sin(p.walkTimer);
-      leftLegAngle = stepSin * 0.5;
-      rightLegAngle = -stepSin * 0.5;
-      armSwing = stepSin * 0.4;
-    }
+    const legAngle = p.isMoving ? Math.sin(p.walkTimer * 1.5) * 0.7 : 0;
+    const armSwing = p.isMoving ? Math.sin(p.walkTimer * 1.5) * 0.6 : 0;
+    const breathe = Math.sin(p.breatheTimer * 2) * 2;
 
     const isLeft = p.facing === 'left';
     const isRight = p.facing === 'right';
     const isUp = p.facing === 'up';
 
-    // 1. LEGS
-    this.ctx.strokeStyle = '#292524';
-    this.ctx.lineWidth = isFemale ? 4.5 : 5.5;
-
-    this.ctx.save();
-    this.ctx.translate(-6, 12);
-    this.ctx.rotate(leftLegAngle);
-    this.ctx.beginPath();
-    this.ctx.moveTo(0, 0);
-    this.ctx.lineTo(0, 15);
-    this.ctx.stroke();
+    // 2. Animated Legs (Boots)
     this.ctx.fillStyle = '#1c1917';
-    this.ctx.fillRect(-2, 13, 6, 4);
+    this.ctx.save();
+    this.ctx.translate(-5, 12);
+    this.ctx.rotate(legAngle);
+    this.ctx.fillRect(-3.5, 0, 7, 14);
     this.ctx.restore();
 
     this.ctx.save();
-    this.ctx.translate(6, 12);
-    this.ctx.rotate(rightLegAngle);
-    this.ctx.beginPath();
-    this.ctx.moveTo(0, 0);
-    this.ctx.lineTo(0, 15);
-    this.ctx.stroke();
-    this.ctx.fillStyle = '#1c1917';
-    this.ctx.fillRect(-2, 13, 6, 4);
+    this.ctx.translate(5, 12);
+    this.ctx.rotate(-legAngle);
+    this.ctx.fillRect(-3.5, 0, 7, 14);
     this.ctx.restore();
 
-    // 2. TORSO & MOBA ARMOR (Songke & Gold Accents)
+    // 3. Chibi Torso & Songke Woven Armor
+    const torsoW = isFemale ? 22 : 26;
+    const torsoH = 22;
     this.ctx.fillStyle = char.visualTheme.clothColor;
     this.ctx.beginPath();
-    const torsoW = isFemale ? 19 : 23;
-    const torsoH = 19;
-    this.ctx.roundRect(-torsoW / 2, -7 + breatheY, torsoW, torsoH, [5]);
+    this.ctx.roundRect(-torsoW / 2, -7 + breathe, torsoW, torsoH, [7]);
     this.ctx.fill();
 
-    // Golden Armor Shoulder Pads (MOBA Style)
+    // Golden Armor Accent & Belt
     this.ctx.fillStyle = char.visualTheme.accentColor;
-    this.ctx.fillRect(-torsoW / 2 - 3, -6 + breatheY, 7, 5);
-    this.ctx.fillRect(torsoW / 2 - 4, -6 + breatheY, 7, 5);
+    this.ctx.fillRect(-torsoW / 2 - 3, -6 + breathe, 8, 6);
+    this.ctx.fillRect(torsoW / 2 - 5, -6 + breathe, 8, 6);
 
-    // Songke pattern
-    this.ctx.fillStyle = char.visualTheme.accentColor;
-    this.ctx.fillRect(-torsoW / 2 + 2, -2 + breatheY, torsoW - 4, 3.5);
-
-    // Belt
     this.ctx.fillStyle = char.visualTheme.headbandColor;
-    this.ctx.fillRect(-torsoW / 2 - 1, 8 + breatheY, torsoW + 2, 4.5);
+    this.ctx.fillRect(-torsoW / 2 - 1, 9 + breathe, torsoW + 2, 4.5);
 
-    // 3. HEAD & HAIR
-    const headY = -17 + breatheY;
-    this.ctx.fillStyle = '#b45309';
+    // 4. Chibi Head & Hair
+    const headY = -20 + breathe;
+    
+    this.ctx.fillStyle = '#f6ad55';
     this.ctx.beginPath();
-    this.ctx.arc(0, headY, isFemale ? 9.5 : 10.5, 0, Math.PI * 2);
+    this.ctx.arc(0, headY, isFemale ? 13 : 14, 0, Math.PI * 2);
     this.ctx.fill();
 
     this.ctx.fillStyle = char.visualTheme.hairColor;
     this.ctx.beginPath();
-    this.ctx.arc(0, headY - 2, isFemale ? 11 : 10.5, Math.PI, 0);
+    this.ctx.arc(0, headY - 3, isFemale ? 15 : 14.5, Math.PI, 0);
     this.ctx.fill();
 
     if (isFemale) {
       this.ctx.beginPath();
-      this.ctx.moveTo(-9.5, headY);
-      this.ctx.lineTo(-13, headY + 18);
-      this.ctx.lineTo(-7, headY + 14);
-      this.ctx.moveTo(9.5, headY);
-      this.ctx.lineTo(13, headY + 18);
-      this.ctx.lineTo(7, headY + 14);
+      this.ctx.moveTo(-13, headY);
+      this.ctx.lineTo(-18, headY + 22);
+      this.ctx.lineTo(-10, headY + 18);
+      this.ctx.moveTo(13, headY);
+      this.ctx.lineTo(18, headY + 22);
+      this.ctx.lineTo(10, headY + 18);
       this.ctx.fill();
     }
 
     if (!isUp) {
       this.ctx.fillStyle = '#ffffff';
-      const eyeOffsetX = isLeft ? -4 : isRight ? 4 : 0;
-      this.ctx.fillRect(-3.5 + eyeOffsetX, headY - 1, 2, 2);
-      this.ctx.fillRect(1.5 + eyeOffsetX, headY - 1, 2, 2);
+      const eyeOff = isLeft ? -4.5 : isRight ? 4.5 : 0;
+      this.ctx.beginPath();
+      this.ctx.arc(-4 + eyeOff, headY - 1, 3, 0, Math.PI * 2);
+      this.ctx.arc(4 + eyeOff, headY - 1, 3, 0, Math.PI * 2);
+      this.ctx.fill();
+
       this.ctx.fillStyle = '#0f172a';
-      this.ctx.fillRect(-3 + eyeOffsetX, headY - 0.5, 1.2, 1.2);
-      this.ctx.fillRect(2 + eyeOffsetX, headY - 0.5, 1.2, 1.2);
+      this.ctx.beginPath();
+      this.ctx.arc(-4 + eyeOff, headY - 1, 1.5, 0, Math.PI * 2);
+      this.ctx.arc(4 + eyeOff, headY - 1, 1.5, 0, Math.PI * 2);
+      this.ctx.fill();
     }
 
-    // Headband with waving ribbon
+    // Headband with Waving Ribbon
     this.ctx.fillStyle = char.visualTheme.headbandColor;
-    this.ctx.fillRect(-9.5, headY - 5.5, 19, 4.5);
+    this.ctx.fillRect(-13, headY - 8, 26, 6);
     this.ctx.fillStyle = char.visualTheme.accentColor;
-    this.ctx.fillRect(-4, headY - 4.5, 8, 2.5);
+    this.ctx.fillRect(-6, headY - 7, 12, 4);
 
-    const ribbonWave = Math.sin(p.ribbonWave) * 4.5;
+    const ribbonWave = Math.sin(p.ribbonWave * 1.5) * 6;
     this.ctx.strokeStyle = char.visualTheme.headbandColor;
-    this.ctx.lineWidth = 3;
+    this.ctx.lineWidth = 4;
     this.ctx.beginPath();
-    this.ctx.moveTo(isLeft ? 9 : -9, headY - 3);
-    this.ctx.quadraticCurveTo(isLeft ? 20 : -20, headY - 7 + ribbonWave, isLeft ? 26 : -26, headY + ribbonWave);
+    this.ctx.moveTo(isLeft ? 12 : -12, headY - 5);
+    this.ctx.quadraticCurveTo(isLeft ? 26 : -26, headY - 10 + ribbonWave, isLeft ? 36 : -36, headY + ribbonWave);
     this.ctx.stroke();
 
-    // 4. ARMS & WEAPON
+    // 5. Animated Arms & Weapon
     this.ctx.save();
-    this.ctx.translate(-torsoW / 2, -2 + breatheY);
-    this.ctx.rotate(armSwing);
-    this.ctx.strokeStyle = '#b45309';
-    this.ctx.lineWidth = isFemale ? 3.8 : 4.8;
-    this.ctx.beginPath();
-    this.ctx.moveTo(0, 0);
-    this.ctx.lineTo(isLeft ? -11 : -4, 13);
-    this.ctx.stroke();
-    this.ctx.restore();
-
-    this.ctx.save();
-    this.ctx.translate(torsoW / 2, -2 + breatheY);
-
+    this.ctx.translate(torsoW / 2, -3 + breathe);
+    
     if (p.isAttacking) {
       const { dirX, dirY } = this.getFacingVector(p.facing);
       const attackProgress = 1 - p.attackTimer / p.attackDuration;
-      const attackAngle = (attackProgress - 0.5) * Math.PI * 1.5;
+      const attackAngle = (attackProgress - 0.5) * Math.PI * 1.7;
       const baseAngle = Math.atan2(dirY, dirX);
       this.ctx.rotate(baseAngle + attackAngle);
 
-      if (char.weaponType === 'parang') {
-        this.ctx.fillStyle = '#f8fafc';
-        this.ctx.strokeStyle = '#fbbf24';
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, 0);
-        this.ctx.lineTo(42, -9);
-        this.ctx.lineTo(48, 5);
-        this.ctx.lineTo(0, 7);
-        this.ctx.closePath();
-        this.ctx.fill();
-        this.ctx.stroke();
-
-        this.ctx.strokeStyle = 'rgba(251, 191, 36, 0.85)';
-        this.ctx.lineWidth = 5;
-        this.ctx.beginPath();
-        this.ctx.arc(0, 0, 52, -0.7, 0.7);
-        this.ctx.stroke();
-      } else if (char.weaponType === 'spear') {
-        this.ctx.strokeStyle = '#78350f';
-        this.ctx.lineWidth = 4;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, 0);
-        this.ctx.lineTo(65, 0);
-        this.ctx.stroke();
-        this.ctx.fillStyle = '#f59e0b';
-        this.ctx.beginPath();
-        this.ctx.moveTo(65, -7);
-        this.ctx.lineTo(82, 0);
-        this.ctx.lineTo(65, 7);
-        this.ctx.closePath();
-        this.ctx.fill();
-      } else if (char.weaponType === 'whip') {
-        this.ctx.strokeStyle = '#f59e0b';
-        this.ctx.lineWidth = 4;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, 0);
-        this.ctx.quadraticCurveTo(40, -30, 82, 12);
-        this.ctx.stroke();
-      } else {
-        this.ctx.strokeStyle = '#78350f';
-        this.ctx.lineWidth = 4.5;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, 10);
-        this.ctx.lineTo(0, -38);
-        this.ctx.stroke();
-        this.ctx.fillStyle = '#06b6d4';
-        this.ctx.beginPath();
-        this.ctx.arc(0, -42, 7, 0, Math.PI * 2);
-        this.ctx.fill();
-      }
-    } else {
-      this.ctx.rotate(-armSwing);
-      this.ctx.strokeStyle = '#b45309';
-      this.ctx.lineWidth = isFemale ? 3.8 : 4.8;
+      this.ctx.fillStyle = '#f8fafc';
+      this.ctx.strokeStyle = '#fbbf24';
+      this.ctx.lineWidth = 3;
       this.ctx.beginPath();
       this.ctx.moveTo(0, 0);
-      this.ctx.lineTo(isRight ? 11 : 4, 13);
+      this.ctx.lineTo(50, -12);
+      this.ctx.lineTo(58, 6);
+      this.ctx.lineTo(0, 10);
+      this.ctx.closePath();
+      this.ctx.fill();
       this.ctx.stroke();
 
-      if (char.weaponType === 'parang') {
-        this.ctx.fillStyle = '#e2e8f0';
-        this.ctx.fillRect(isRight ? 11 : 4, 6, 4.5, 20);
-        this.ctx.fillStyle = '#78350f';
-        this.ctx.fillRect(isRight ? 11 : 4, 2, 4.5, 5);
-      } else if (char.weaponType === 'spear') {
-        this.ctx.strokeStyle = '#78350f';
-        this.ctx.lineWidth = 3;
-        this.ctx.beginPath();
-        this.ctx.moveTo(6, -28);
-        this.ctx.lineTo(6, 24);
-        this.ctx.stroke();
-      } else if (char.weaponType === 'magic') {
-        this.ctx.strokeStyle = '#78350f';
-        this.ctx.lineWidth = 3;
-        this.ctx.beginPath();
-        this.ctx.moveTo(6, -24);
-        this.ctx.lineTo(6, 20);
-        this.ctx.stroke();
-        this.ctx.fillStyle = '#06b6d4';
-        this.ctx.beginPath();
-        this.ctx.arc(6, -26, 4.5, 0, Math.PI * 2);
-        this.ctx.fill();
-      }
+      this.ctx.strokeStyle = 'rgba(251, 191, 36, 0.95)';
+      this.ctx.lineWidth = 8;
+      this.ctx.beginPath();
+      this.ctx.arc(0, 0, 64, -0.9, 0.9);
+      this.ctx.stroke();
+    } else {
+      this.ctx.rotate(armSwing);
+      this.ctx.fillStyle = '#b45309';
+      this.ctx.fillRect(0, 0, 6, 16);
+
+      this.ctx.fillStyle = '#e2e8f0';
+      this.ctx.fillRect(3, 10, 5, 26);
+      this.ctx.fillStyle = char.visualTheme.accentColor;
+      this.ctx.fillRect(3, 5, 5, 8);
     }
     this.ctx.restore();
 
     this.ctx.restore();
+
+    // 6. Name Tag & Health Bar
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.font = '700 12px "Plus Jakarta Sans", sans-serif';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(`${char.name} (Lv.${this.playerStats.level})`, p.x, p.y - 48);
+
+    const barW = 50;
+    const barH = 6;
+    const hpPct = Math.max(0, this.playerStats.hp / this.playerStats.maxHp);
+    this.ctx.fillStyle = '#0f172a';
+    this.ctx.fillRect(p.x - barW / 2, p.y - 60, barW, barH);
+    this.ctx.fillStyle = '#22c55e';
+    this.ctx.fillRect(p.x - barW / 2, p.y - 60, barW * hpPct, barH);
+    this.ctx.strokeStyle = '#1e293b';
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(p.x - barW / 2, p.y - 60, barW, barH);
   }
 
   private renderProjectiles() {

@@ -5,25 +5,43 @@ export const REGIONS_DATA: Record<RegionId, RegionInfo> = {
     id: 'NAGEKEO',
     name: 'Kampung Adat Nagekeo (Titik Awal)',
     subtitle: 'Lembah Megalitik & Rumah Adat Sa\'o',
-    description: 'Titik awal petualangan ksatria Nagekeo. Kampung adat dengan batu megalit persembahan leluhur dan rumah adat berarsitektur megah di bawah lindungan Gunung Ebulobo.',
+    description: 'Titik awal petualangan ksatria Nagekeo. Kampung adat dengan batu megalit persembahan leluhur dan rumah adat di bawah lindungan Gunung Ebulobo.',
     themeColor: '#059669', // Emerald
     ambientType: 'mist',
     recommendedLevel: 1,
   },
+  GERO: {
+    id: 'GERO',
+    name: 'Desa Tradisional Gero',
+    subtitle: 'Sentra Tenun & Altar Leluhur Nagekeo',
+    description: 'Desa Gero yang asri dan sejuk di Nagekeo. Terkenal dengan tradisi tenun ikat emas dan perisai pelindung desa dari gangguan siluman.',
+    themeColor: '#0d9488', // Teal
+    ambientType: 'mist',
+    recommendedLevel: 2,
+  },
+  MULAKOLI: {
+    id: 'MULAKOLI',
+    name: 'Lembah Subur Mulakoli',
+    subtitle: 'Situs Sejarah & Perkebunan Nagekeo',
+    description: 'Lembah Mulakoli yang subur di Nagekeo. Tempat aliran sungai jernih dan situs pertahanan leluhur melawan invasi makhluk siluman.',
+    themeColor: '#16a34a', // Green
+    ambientType: 'coastal',
+    recommendedLevel: 3,
+  },
   ENDE: {
     id: 'ENDE',
     name: 'Tanah Historis Ende',
-    subtitle: 'Gua Karst Wolowea & Pasar Tenun',
-    description: 'Wilayah historis di pesisir selatan Flores dengan tebing karst purba, pusat perenungan Bung Karno, dan sarang Siluman Kelelawar Bido.',
+    subtitle: 'Gua Karst Wolowea & Perenungan',
+    description: 'Wilayah historis di pesisir selatan Flores dengan tebing karst purba dan sarang Siluman Kelelawar Bido.',
     themeColor: '#0284c7', // Sky Cyan
     ambientType: 'cave',
-    recommendedLevel: 3,
+    recommendedLevel: 4,
   },
   MAUMERE: {
     id: 'MAUMERE',
     name: 'Teluk & Savana Maumere',
     subtitle: 'Teluk Indah & Savana Kuda Api',
-    description: 'Pesisir teluk terpanjang di Flores dengan terumbu karang toska yang berkilau serta padang savana tempat berkeliarannya Siluman Kuda Api Jara Gena.',
+    description: 'Pesisir teluk terpanjang di Flores dengan terumbu karang toska serta padang savana tempat berkeliarannya Siluman Kuda Api Jara Gena.',
     themeColor: '#eab308', // Amber Gold
     ambientType: 'coastal',
     recommendedLevel: 5,
@@ -262,10 +280,10 @@ export const INITIAL_QUESTS: Quest[] = [
     rewardGold: 50,
   },
   {
-    id: 'q_nagekeo_caci',
-    title: 'Pertahanan Pertama: Siluman Ata Polo di Nagekeo',
-    region: 'NAGEKEO',
-    description: 'Kalahkan 4 Siluman Ata Polo yang menyerang perbatasan desa adat Nagekeo.',
+    id: 'q_gero_quest',
+    title: 'Amankan Desa Gero dari Serbuan Siluman',
+    region: 'GERO',
+    description: 'Lanjutkan perjalanan ke Desa Tradisional Gero Nagekeo dan kalahkan 4 Siluman Ata Polo yang berkeliaran.',
     targetType: 'defeat',
     targetName: 'siluman_ata_polo',
     targetCount: 4,
@@ -274,6 +292,20 @@ export const INITIAL_QUESTS: Quest[] = [
     rewardExp: 130,
     rewardGold: 95,
     rewardItem: ALL_DATABASE_ITEMS.cambuk_caci,
+  },
+  {
+    id: 'q_mulakoli_quest',
+    title: 'Bersihkan Lembah Mulakoli dari Siluman Ine Bu\'a',
+    region: 'MULAKOLI',
+    description: 'Jelajahi Lembah Subur Mulakoli di Nagekeo dan kalahkan 4 Siluman Ine Bu\'a (Nenek Rimba).',
+    targetType: 'defeat',
+    targetName: 'siluman_ine_bua',
+    targetCount: 4,
+    currentCount: 0,
+    completed: false,
+    rewardExp: 180,
+    rewardGold: 120,
+    rewardItem: ALL_DATABASE_ITEMS.zirah_kulit_komodo,
   },
   {
     id: 'q_ende_quest',
@@ -301,7 +333,7 @@ export const INITIAL_QUESTS: Quest[] = [
     completed: false,
     rewardExp: 300,
     rewardGold: 200,
-    rewardItem: ALL_DATABASE_ITEMS.zirah_kulit_komodo,
+    rewardItem: ALL_DATABASE_ITEMS.kalung_taring_komodo,
   },
   {
     id: 'q_kelimutu_climax',
@@ -324,7 +356,7 @@ export const DIALOGUES_DATA: Record<string, DialogueNode> = {
     speaker: 'Tetua Kraeng Nagekeo',
     title: 'Pemimpin Adat Nagekeo',
     portrait: 'elder',
-    text: 'Tabe gami, ksatria kebanggaan Nagekeo! Perjalananmu dimulai dari tanah kelahiran kita di Nagekeo, merambah ke tanah historis Ende, hingga ke pesisir teluk Maumere dan puncak suci Kelimutu. Siluman Ata Polo telah mengusik kedamaian kita!',
+    text: 'Tabe gami, ksatria kebanggaan Nagekeo! Perjalananmu dimulai dari Nagekeo, melalui Desa Gero dan Lembah Mulakoli, merambah ke tanah historis Ende, pesisir Maumere, hingga puncak suci Kelimutu. Siluman mengancam tanah kita!',
     options: [
       {
         text: 'Saya siap bertarung membela Nagekeo dan Flores, Tetua!',
@@ -342,18 +374,17 @@ export const DIALOGUES_DATA: Record<string, DialogueNode> = {
     speaker: 'Tetua Kraeng Nagekeo',
     title: 'Pemimpin Adat Nagekeo',
     portrait: 'elder',
-    text: 'Bagus! Tunjukkan keberanian ksatria Nagekeo. Basmi 4 Siluman Ata Polo di perbatasan kampung, dan kuterima kau sebagai pahlawan sejati.',
+    text: 'Bagus! Berjalanlah menuju Desa Gero dan Lembah Mulakoli, lalu teruskan ke Ende dan Maumere. Kalahkan semua siluman yang menghalangi jalanmu!',
     options: [
       {
         text: 'Laksanakan! Demi kehormatan Nagekeo.',
-        action: 'acceptQuest',
-        questId: 'q_nagekeo_caci',
+        action: 'close',
       },
     ],
   },
   weaver_ende: {
     speaker: 'Mama Maria Ende',
-    title: 'Maestro Tenun Ikat Ende',
+    title: 'Maestro Tenun Ende',
     portrait: 'weaver',
     text: 'Selamat datang di tanah Ende, ksatria Nagekeo! Gunakan kain tenun tiga warna ini untuk melindungi diri dari sihir gelap siluman karst.',
     options: [
@@ -384,7 +415,7 @@ export const DIALOGUES_DATA: Record<string, DialogueNode> = {
     speaker: 'Roh Penjaga Tiga Warna',
     title: 'Penjaga Kawah Kelimutu & Ebulobo',
     portrait: 'spirit',
-    text: 'Wahai Ksatria Utama Nagekeo! Engkau telah melintasi Nagekeo, Ende, dan Maumere. Kini tibalah di puncak kawah tiga warna Kelimutu untuk menghadapi Raja Siluman Dheke Kabora!',
+    text: 'Wahai Ksatria Utama Nagekeo! Engkau telah melintasi Nagekeo, Desa Gero, Mulakoli, Ende, dan Maumere. Kini tibalah di puncak kawah tiga warna Kelimutu untuk menghadapi Raja Siluman Dheke Kabora!',
     options: [
       {
         text: 'Demi kejayaan Flores, majulah!',

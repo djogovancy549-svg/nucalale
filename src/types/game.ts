@@ -9,7 +9,7 @@ export type GameState =
   | 'VICTORY'
   | 'GAME_OVER';
 
-export type RegionId = 'NAGEKEO' | 'ENDE' | 'MAUMERE' | 'KELIMUTU';
+export type RegionId = 'NAGEKEO' | 'GERO' | 'MULAKOLI' | 'ENDE' | 'MAUMERE' | 'KELIMUTU';
 
 export interface RegionInfo {
   id: RegionId;
@@ -68,6 +68,15 @@ export interface PlayableCharacter {
   description: string;
   loreStory: string;
   specialPerk: string;
+  role: 'Fighter' | 'Assassin' | 'Marksman' | 'Mage' | 'Tank';
+  tier: 'Mythic Hero' | 'Epic Hero' | 'Legendary Hero';
+  statsBar: {
+    attack: number;
+    durability: number;
+    skillEffect: number;
+    difficulty: number;
+  };
+  battleQuote: string;
   statBonus: {
     hp: number;
     mana: number;
