@@ -1,0 +1,6 @@
+{
+  "name": "Nuca Lale: Petualangan Pulau Flores",
+  "description": "Game RPG petualangan epik menjelajahi keindahan dan misteri Pulau Flores: dari Kampung Adat Wae Rebo, Gua Liang Bua, Labuan Bajo, hingga Danau Tiga Warna Kelimutu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
